@@ -1,19 +1,17 @@
 """
 Config parser definition
 """
-import yaml
-
 from collections import namedtuple
 from typing import Optional, Dict, Any, List
+
+import yaml
 
 from levy.mixins import RenderMixin
 from levy.exceptions import ListParseException
 
 
-class _NULL:
+class _NULL:  # pylint: disable=too-few-public-methods
     """Used to have an internal alternative to None"""
-
-    pass
 
 
 class Config(RenderMixin):
@@ -45,9 +43,9 @@ class Config(RenderMixin):
         """
 
         cfg = cls(name=name)
-        cfg._file = file
+        cfg.file = file  # pylint: disable=attribute-defined-outside-init
 
-        with open(cfg._file, "r") as yml_file:
+        with open(cfg.file, "r") as yml_file:
             rendered = cfg.render_str(yml_file.read())
             cfg._vars = yaml.safe_load(rendered)
 
@@ -99,8 +97,8 @@ class Config(RenderMixin):
         if any((isinstance(val, dict)) for val in values):
             try:
                 configs = [Config.read_dict(v, name=v[self._list_id]) for v in values]
-                ConfTuple = namedtuple(key, (conf.name for conf in configs))
-                self.__setattr__(key, ConfTuple(*configs))
+                conf_tuple = namedtuple(key, (conf.name for conf in configs))
+                self.__setattr__(key, conf_tuple(*configs))
             except Exception:
                 raise ListParseException(f"Error parsing list in {key}")
 
