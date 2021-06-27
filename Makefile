@@ -15,10 +15,10 @@ lint:
 	pylint --rcfile=.pylintrc levy
 
 black:
-	black --line-length levy
+	black levy tests
 
 black_check:
-	black --line-length --check --diff levy
+	black --check --diff levy
 
 unit:
-	pytest test
+	pytest tests
