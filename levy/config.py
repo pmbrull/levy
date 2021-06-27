@@ -4,9 +4,10 @@ Config parser definition
 import yaml
 
 from collections import namedtuple
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 
 from levy.mixins import RenderMixin
+from levy.exceptions import ListParseException
 
 
 class _NULL:
@@ -21,7 +22,10 @@ class Config(RenderMixin):
     """
 
     def __init__(
-        self, name: Optional[str] = None, conf: Optional[Dict[str, Any]] = None
+        self,
+        name: Optional[str] = None,
+        conf: Optional[Dict[str, Any]] = None,
+        list_id: Optional[str] = "name",
     ):
         """
         Load the config ingestion from a given path
@@ -29,7 +33,7 @@ class Config(RenderMixin):
         """
         self.name = name
         self._vars = conf
-        self._list_id = "name"  # Identifies different entities in list
+        self._list_id = list_id  # Identifies different entities in list
 
     @classmethod
     def read_file(cls, file: str, name: Optional[str] = "root") -> "Config":
@@ -78,12 +82,30 @@ class Config(RenderMixin):
                 self(key).update_vars(val)
 
             elif isinstance(val, list):
-                configs = [Config.read_dict(v, name=v[self._list_id]) for v in val]
-                ConfTuple = namedtuple(key, (conf.name for conf in configs))
-                self.__setattr__(key, ConfTuple(*configs))
+                self.update_list(key, val)
 
             else:
                 self.__setattr__(key, val)
+
+    def update_list(self, key: str, values: List[Any]):
+        """
+        Prepare attributes coming from a list.
+        If any elements is a dictionary, try to set a namedtuple of Config, otherwise
+        pass the list as is.
+        :param key: configuration key
+        :param values: list to add as attributes
+        :return:
+        """
+        if any((isinstance(val, dict)) for val in values):
+            try:
+                configs = [Config.read_dict(v, name=v[self._list_id]) for v in values]
+                ConfTuple = namedtuple(key, (conf.name for conf in configs))
+                self.__setattr__(key, ConfTuple(*configs))
+            except Exception:
+                raise ListParseException(f"Error parsing list in {key}")
+
+        else:
+            self.__setattr__(key, values)
 
     def __call__(self, key: str, default: Optional[Any] = _NULL):
         """
