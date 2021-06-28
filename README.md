@@ -104,9 +104,9 @@ The `colors` list has nothing fancy in it, as we have simple types. However, we 
 to parse nested configurations as `Config`, while being able to access them by name
 as attributes.
 
-To fit this spot we have `namedtuple`s. The list attribute becomes a `nestedlist` where
+To fit this spot we have `namedtuple`s. The list attribute becomes a `namedtuple` where
 the properties are the `name`s of the nested items. `name` is set as the default
-identifier, but we can pass others as parameter.
+identifier, but we can pass others as parameter,
 
 ```python
 print(cfg.friends.lima)  # Config(lima)
