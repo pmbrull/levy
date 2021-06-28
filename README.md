@@ -1,5 +1,7 @@
 # levy
 
+![actions](https://github.com/github/docs/actions/workflows/CI.yml/badge.svg)
+
 > Yet Another Configuration Parser
 
 This project is a lightweight take on configuration parsing with a twist.
