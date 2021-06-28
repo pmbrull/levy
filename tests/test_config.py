@@ -2,6 +2,7 @@ import os
 import pytest
 
 from levy.config import Config
+from levy.exceptions import ListParseException
 
 
 class TestConfig:
@@ -55,3 +56,14 @@ class TestConfig:
         assert self.cfg("not in there", "default") == "default"
         with pytest.raises(AttributeError):
             self.cfg("not in there")
+
+    def test_id_yaml(self):
+        """
+        Check how to use custom identifiers for lists
+        """
+        file = os.path.join(self.resources, "test_id.yaml")
+        cfg = Config.read_file(file, list_id="id")
+        assert isinstance(cfg.friends.lima, Config)
+
+        with pytest.raises(ListParseException):
+            Config.read_file(file, list_id="random")
