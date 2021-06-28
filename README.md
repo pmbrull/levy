@@ -1,6 +1,6 @@
 # levy
 
-![actions](https://github.com/github/docs/actions/workflows/CI.yml/badge.svg)
+![actions](https://github.com/pmbrull/levy/actions/workflows/CI.yaml/badge.svg)
 
 > Yet Another Configuration Parser
 
