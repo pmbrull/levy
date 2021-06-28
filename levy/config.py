@@ -34,18 +34,24 @@ class Config(RenderMixin):
         self._list_id = list_id  # Identifies different entities in list
 
     @classmethod
-    def read_file(cls, file: str, name: Optional[str] = "root") -> "Config":
+    def read_file(
+        cls,
+        file: str,
+        name: Optional[str] = "root",
+        list_id: Optional[str] = "name",
+    ) -> "Config":
         """
         Load the configuration from a file
         :param file: YAML file to load
         :param name: Config name
+        :param list_id: Identifier of different entities in config list
         :return:
         """
 
-        cfg = cls(name=name)
-        cfg.file = file  # pylint: disable=attribute-defined-outside-init
+        cfg = cls(name=name, list_id=list_id)
+        cfg._file = file  # pylint: disable=attribute-defined-outside-init
 
-        with open(cfg.file, "r") as yml_file:
+        with open(cfg._file, "r") as yml_file:
             rendered = cfg.render_str(yml_file.read())
             cfg._vars = yaml.safe_load(rendered)
 
@@ -53,15 +59,20 @@ class Config(RenderMixin):
         return cfg
 
     @classmethod
-    def read_dict(cls, _vars: Dict[str, Any], name: Optional[str] = "root") -> "Config":
+    def read_dict(
+        cls,
+        _vars: Dict[str, Any],
+        name: Optional[str] = "root",
+        list_id: Optional[str] = "name",
+    ) -> "Config":
         """
         Create a Config instance from dict values
         :param _vars: config to load
-        :param name: config name
+        :param name: Config name
+        :param list_id: Identifier of different entities in config list
         :return:
         """
-        cfg = cls(name=name)
-        cfg._vars = _vars
+        cfg = cls(name=name, conf=_vars, list_id=list_id)
 
         cfg.update_vars(cfg._vars)
         return cfg
@@ -76,7 +87,10 @@ class Config(RenderMixin):
         for key, val in _vars.items():
 
             if isinstance(val, dict):
-                self.__setattr__(key, self.__class__(name=key, conf=_vars[key]))
+                self.__setattr__(
+                    key,
+                    self.__class__(name=key, conf=_vars[key], list_id=self._list_id),
+                )
                 self(key).update_vars(val)
 
             elif isinstance(val, list):
@@ -96,7 +110,10 @@ class Config(RenderMixin):
         """
         if any((isinstance(val, dict)) for val in values):
             try:
-                configs = [Config.read_dict(v, name=v[self._list_id]) for v in values]
+                configs = [
+                    Config.read_dict(v, name=v[self._list_id], list_id=self._list_id)
+                    for v in values
+                ]
                 conf_tuple = namedtuple(key, (conf.name for conf in configs))
                 self.__setattr__(key, conf_tuple(*configs))
             except Exception:
