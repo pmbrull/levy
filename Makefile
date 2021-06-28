@@ -22,3 +22,5 @@ black_check:
 
 unit:
 	pytest tests
+
+test_all: install install_test black_check lint unit
