@@ -120,6 +120,25 @@ And if we check the type...
 isinstance(cfg.friends, tuple)  # True
 ```
 
+## Using defaults
+
+It is common to fall back to default values when some parameter is not informed in our configuration.
+
+We can `__call__` our `Config` in order to be able to apply them.
+
+```python
+cfg("not in there", default="default")  # 'default'
+cfg("not in there", default=None)  # None
+```
+
+If no default is specified, the call will run the usual attribute retrieval. This is
+interesting for cases where we need to dynamically get some configuration that *should*
+be there:
+
+```python
+cfg("not in there")  # AttributeError
+```
+
 ## Contributing
 
 You can install the project requirements with `make install`. To run the tests, `make install_test`
