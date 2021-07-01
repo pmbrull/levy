@@ -48,7 +48,7 @@ We can create our `Config` object as
 ```python
 from levy.config import Config
 
-cfg = Config.read_dict("test.yaml")
+cfg = Config.read_file("test.yaml")
 ```
 
 As there is the `jinja2` layer we might want to check what is the shape of the
