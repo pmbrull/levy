@@ -139,6 +139,24 @@ be there:
 cfg("not in there")  # AttributeError
 ```
 
+## Render custom functions
+
+### Environment Variables
+
+With this templating approach on top of YAML, we can not only use default behaviors, but also
+define our own custom functionalities.
+
+The one we have provided by default is reading environment variables at render time:
+
+```yaml
+variable: ${ env('VARIABLE') }
+default: ${ env('foo', default='bar') }
+```
+
+Where the function `env` is the key name given to a function defined to `get` env vars
+with an optional default. If the env variable is not found and no default is provided,
+we'll get a `MissingEnvException`.
+
 ## Contributing
 
 You can install the project requirements with `make install`. To run the tests, `make install_test`

@@ -1,5 +1,6 @@
 import os
 import pytest
+from unittest import mock
 
 from levy.config import Config
 from levy.exceptions import ListParseException
@@ -67,3 +68,13 @@ class TestConfig:
 
         with pytest.raises(ListParseException):
             Config.read_file(file, list_id="random")
+
+    @mock.patch.dict(os.environ, {"VARIABLE": "random"})
+    def test_env_var(self):
+        """
+        Render environment variables with and without default
+        """
+        file = os.path.join(self.resources, "test_env.yaml")
+        cfg = Config.read_file(file)
+        assert cfg.variable == "random"
+        assert cfg.default == "bar"
