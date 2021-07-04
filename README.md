@@ -1,6 +1,9 @@
 # levy
 
-![actions](https://github.com/pmbrull/levy/actions/workflows/CI.yaml/badge.svg)
+[![Latest version](https://img.shields.io/pypi/v/levy.svg)](https://pypi.org/project/levy/)
+[![Python versions](https://img.shields.io/pypi/pyversions/levy.svg)](https://pypi.org/project/levy/)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![actions](https://github.com/pmbrull/levy/actions/workflows/CI.yaml/badge.svg)](https://github.com/pmbrull/levy)
 
 > Yet Another Configuration Parser
 
