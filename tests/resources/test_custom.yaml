@@ -1,0 +1,2 @@
+variable: ${ my_func(1) }
+foo: ${ bar('x') }

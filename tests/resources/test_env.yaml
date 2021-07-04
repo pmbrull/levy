@@ -1,0 +1,2 @@
+variable: ${ env('VARIABLE') }
+default: ${ env('foo', default='bar') }
