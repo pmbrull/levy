@@ -3,6 +3,7 @@ import pytest
 from unittest import mock
 
 from levy.config import Config
+from levy.renderer import render_reg
 from levy.exceptions import ListParseException
 
 
@@ -78,3 +79,24 @@ class TestConfig:
         cfg = Config.read_file(file)
         assert cfg.variable == "random"
         assert cfg.default == "bar"
+
+    def test_custom_render(self):
+        """
+        Check renderer registry is applied when reading YAML
+        """
+
+        @render_reg.add("my_func")
+        def my_func(num: int):
+            return num + 1
+
+        @render_reg.add("bar")  # Name can be arbitrary
+        def upper(s: str):
+            return s.upper()
+
+        file = os.path.join(self.resources, "test_custom.yaml")
+        cfg = Config.read_file(file)
+        assert cfg.variable == 2
+        assert cfg.foo == "X"
+
+        # We can still call our function as usual
+        assert my_func(1) == 2

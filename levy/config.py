@@ -6,7 +6,7 @@ from typing import Optional, Dict, Any, List
 
 import yaml
 
-from levy.mixins import RenderMixin
+from levy.renderer import render_str
 from levy.exceptions import ListParseException
 
 
@@ -14,7 +14,7 @@ class _NULL:  # pylint: disable=too-few-public-methods
     """Used to have an internal alternative to None"""
 
 
-class Config(RenderMixin):
+class Config:
     """
     This class parses the pipelines config files
     """
@@ -52,7 +52,7 @@ class Config(RenderMixin):
         cfg._file = file  # pylint: disable=attribute-defined-outside-init
 
         with open(cfg._file, "r") as yml_file:
-            rendered = cfg.render_str(yml_file.read())
+            rendered = render_str(yml_file.read())
             cfg._vars = yaml.safe_load(rendered)
 
         cfg.update_vars(cfg._vars)
