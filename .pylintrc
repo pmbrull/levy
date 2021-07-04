@@ -13,3 +13,4 @@ disable=W1203, W0511, W0707, W0212
 # Adding more length than black as autoformatting leaves imports without line breaks, which
 # triggers C0301 on pylint
 max-line-length=140
+good-names=fn
