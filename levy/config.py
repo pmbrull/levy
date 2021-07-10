@@ -10,10 +10,6 @@ from levy.renderer import render_str
 from levy.exceptions import ListParseException
 
 
-class _NULL:  # pylint: disable=too-few-public-methods
-    """Used to have an internal alternative to None"""
-
-
 class Config:
     """
     This class parses the pipelines config files
@@ -122,14 +118,14 @@ class Config:
         else:
             self.__setattr__(key, values)
 
-    def __call__(self, key: str, default: Optional[Any] = _NULL):
+    def __call__(self, key: str, default: Optional[Any] = ...):
         """
         Used for info retrieval
         :param key: attribute to get
         :param default: optional default to get if key not in __dict__
         :return:
         """
-        if default is _NULL:
+        if default is ...:
             return self.__getattribute__(key)
 
         return self.__getattribute__(key) if key in self.__dict__ else default
