@@ -178,11 +178,11 @@ We then need to define the behavior of the functions `my_func` and `bar`.
 from levy.config import Config
 from levy.renderer import render_reg
 
-@render_reg.add('my_func')
+@render_reg.add()  # By default, it registers the function name
 def my_func(num: int):
     return num + 1
 
-@render_reg.add('bar')  # Name can be arbitrary
+@render_reg.add('bar')  # Name can be overwritten if required
 def upper(s: str):
     return s.upper()
 
@@ -195,6 +195,20 @@ Note how we registered `my_func` with the same name it appeared in the YAML. How
 the name is completely arbitrary, and we can pass the function `upper` with the name `bar`.
 
 With this approach one can add even further dynamism to the YAML config files.
+
+To peek into the registry state, we can run:
+
+```python
+render_reg.registry
+```
+
+Which in the example will show us
+
+```
+{'env': <function __main__.get_env(conf_str: str, default: Optional[str] = None) -> str>,
+ 'my_func': <function __main__.my_func(num: int)>,
+ 'bar': <function __main__.upper(s: str)>}
+```
 
 ## Contributing
 
