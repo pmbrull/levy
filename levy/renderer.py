@@ -16,9 +16,10 @@ def register():
     """
     registry = dict()
 
-    def add(name: str):
+    def add(name: str = None):
         def inner(fn):
-            registry[name] = fn
+            _name = fn.__name__ if not name else name
+            registry[_name] = fn
             return fn
 
         return inner

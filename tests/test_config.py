@@ -85,7 +85,7 @@ class TestConfig:
         Check renderer registry is applied when reading YAML
         """
 
-        @render_reg.add("my_func")
+        @render_reg.add()
         def my_func(num: int):
             return num + 1
 
