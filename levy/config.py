@@ -110,7 +110,7 @@ class Config:
                     Config.read_dict(v, name=v[self._list_id], list_id=self._list_id)
                     for v in values
                 ]
-                conf_tuple = namedtuple(key, (conf.name for conf in configs))
+                conf_tuple = namedtuple(key, (conf(self._list_id) for conf in configs))
                 self.__setattr__(key, conf_tuple(*configs))
             except Exception:
                 raise ListParseException(f"Error parsing list in {key}")
