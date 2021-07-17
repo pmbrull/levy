@@ -4,7 +4,9 @@ Config parser definition
 from collections import namedtuple
 from typing import Optional, Dict, Any, List
 
+import logging
 import yaml
+from jsonschema import validate, ValidationError, SchemaError
 
 from levy.renderer import render_str
 from levy.exceptions import ListParseException
@@ -35,12 +37,14 @@ class Config:
         file: str,
         name: Optional[str] = "root",
         list_id: Optional[str] = "name",
+        schema: Optional[Dict[Any, Any]] = None,
     ) -> "Config":
         """
         Load the configuration from a file
         :param file: YAML file to load
         :param name: Config name
         :param list_id: Identifier of different entities in config list
+        :param schema: Used to validate the data to be loaded
         :return:
         """
 
@@ -51,6 +55,7 @@ class Config:
             rendered = render_str(yml_file.read())
             cfg._vars = yaml.safe_load(rendered)
 
+        cfg.validate_schema(schema)
         cfg.update_vars(cfg._vars)
         return cfg
 
@@ -117,6 +122,24 @@ class Config:
 
         else:
             self.__setattr__(key, values)
+
+    def validate_schema(self, schema: Optional[Dict[Any, Any]] = None):
+        """
+        Optionally, validate the incoming data vs a provided schema.
+
+        The schema should follow JSON schema specification.
+        :param schema: JSON schema specification as a Dict
+        :return: Either the validation passes or raise an exception
+        """
+        if schema:
+            try:
+                validate(self._vars, schema)
+            except ValidationError as err:
+                logging.error("Data does not follow the provided schema.")
+                raise err
+            except SchemaError as err:
+                logging.error("Trying to run a validation with a bad schema")
+                raise err
 
     def __call__(self, key: str, default: Optional[Any] = ...):
         """

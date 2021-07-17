@@ -2,6 +2,8 @@ import os
 import pytest
 from unittest import mock
 
+from jsonschema import ValidationError, SchemaError
+
 from levy.config import Config
 from levy.renderer import render_reg
 from levy.exceptions import ListParseException
@@ -100,3 +102,53 @@ class TestConfig:
 
         # We can still call our function as usual
         assert my_func(1) == 2
+
+    def test_validate(self):
+        """
+        Prove validation behavior
+        """
+        schema = {
+            "type": "object",
+            "properties": {
+                "title": {"type": "string"},
+                "colors": {"type": "array", "items": {"type": "string"}},
+                "hobby": {
+                    "type": "object",
+                    "properties": {
+                        "eating": {
+                            "type": "object",
+                            "properties": {"what": {"type": "string"}},
+                        }
+                    },
+                },
+                "friends": {"type": "array", "items": {"type": "object"}},
+            },
+        }
+
+        Config.read_file(self.file, schema=schema)  # this should run OK
+
+        schema_ko = {
+            "type": "object",
+            "properties": {
+                "title": {"type": "string"},
+                "colors": {"type": "array", "items": {"type": "number"}},  # This is bad
+                "hobby": {
+                    "type": "object",
+                    "properties": {
+                        "eating": {
+                            "type": "object",
+                            "properties": {"what": {"type": "string"}},
+                        }
+                    },
+                },
+                "friends": {"type": "array", "items": {"type": "object"}},
+            },
+        }
+
+        with pytest.raises(ValidationError):
+            Config.read_file(self.file, schema=schema_ko)
+
+        schema_no_bueno = {"type": "object", "properties": {"random"}}
+
+        with pytest.raises(SchemaError):
+            Config.read_file(self.file, schema=schema_no_bueno)
