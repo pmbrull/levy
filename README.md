@@ -123,6 +123,12 @@ And if we check the type...
 isinstance(cfg.friends, tuple)  # True
 ```
 
+If we encounter an error while defining the `namedtuple`s structure, we will get a 
+`ListParseException`. We should then check how are we defining the lists and our `list_id`.
+
+> OBS: Note that the `list_id` field should be a valid `namedtuple` key. This means that
+    it cannot contain spaces or other not supported special characters.
+
 ## Using defaults
 
 It is common to fall back to default values when some parameter is not informed in our configuration.
@@ -209,6 +215,44 @@ Which in the example will show us
  'my_func': <function __main__.my_func(num: int)>,
  'bar': <function __main__.upper(s: str)>}
 ```
+
+## Schema Validation
+
+At some point it might be interesting to make sure that the YAML we are reading follows
+some standards. That is why we have introduced the ability to pass a `schema` our file
+needs to follow.
+
+The schema validation is done using the module `jsonschema`, which follows the JSON schema
+[specification](https://json-schema.org/understanding-json-schema/reference/).
+
+As an example, if we want to make sure our kitten data is valid, we can write:
+
+```python
+schema = {
+    "type": "object",
+    "properties": {
+        "title": {"type": "string"},
+        "colors": {"type": "array", "items": {"type": "string"}},
+        "hobby": {
+            "type": "object",
+            "properties": {
+                "eating": {
+                    "type": "object",
+                    "properties": {
+                        "what": {"type": "string"}
+                    }
+                }
+            }
+        },
+        "friends": {"type": "array", "items": {"type": "object"}}
+    }
+}
+
+Config.read_file("<file>", schema=schema)  # this should run OK
+```
+
+In case the validation fails, we'll get a `ValidationError`. If the schema is incorrect,
+the exception will be a `SchemaError` instead.
 
 ## Contributing
 
