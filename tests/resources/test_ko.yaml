@@ -1,0 +1,12 @@
+title: "Lévy the cat"
+colors:
+  - 1
+  - 2
+hobby:
+  eating: "anything"
+friends:
+  {% set friends = [ "cartman", "lima" ] %}
+  {% for friend in friends %}
+  - name: ${ friend }
+    type: "cat"
+  {% endfor %}

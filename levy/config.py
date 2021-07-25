@@ -2,17 +2,21 @@
 Config parser definition
 """
 from collections import namedtuple
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any, List, TypeVar, Generic
 
 import logging
 import yaml
-from jsonschema import validate, ValidationError, SchemaError
+
+from pydantic import ValidationError
 
 from levy.renderer import render_str
 from levy.exceptions import ListParseException
 
 
-class Config:
+T = TypeVar("T")
+
+
+class Config(Generic[T]):
     """
     This class parses the pipelines config files
     """
@@ -31,50 +35,56 @@ class Config:
         self._vars = conf
         self._list_id = list_id  # Identifies different entities in list
 
+        self.file = None  # Present if we read_file
+        self.data = None  # Present if we read a file with datatype
+
     @classmethod
     def read_file(
         cls,
         file: str,
+        *,
         name: Optional[str] = "root",
         list_id: Optional[str] = "name",
-        schema: Optional[Dict[Any, Any]] = None,
+        datatype: Optional[T] = None,
     ) -> "Config":
         """
         Load the configuration from a file
         :param file: YAML file to load
         :param name: Config name
         :param list_id: Identifier of different entities in config list
-        :param schema: Used to validate the data to be loaded
+        :param datatype: Class defining incoming data
         :return:
         """
 
-        cfg = cls(name=name, list_id=list_id)
-        cfg._file = file  # pylint: disable=attribute-defined-outside-init
-
-        with open(cfg._file, "r") as yml_file:
+        with open(file, "r") as yml_file:
             rendered = render_str(yml_file.read())
-            cfg._vars = yaml.safe_load(rendered)
+            cfg = cls.read_dict(
+                yaml.safe_load(rendered), name=name, list_id=list_id, datatype=datatype
+            )
 
-        cfg.validate_schema(schema)
-        cfg.update_vars(cfg._vars)
+        cfg._file = file  # pylint: disable=attribute-defined-outside-init
         return cfg
 
     @classmethod
     def read_dict(
         cls,
         _vars: Dict[str, Any],
+        *,
         name: Optional[str] = "root",
         list_id: Optional[str] = "name",
+        datatype: Optional[T] = None,
     ) -> "Config":
         """
         Create a Config instance from dict values
         :param _vars: config to load
         :param name: Config name
         :param list_id: Identifier of different entities in config list
+        :param datatype: Class defining incoming data
         :return:
         """
         cfg = cls(name=name, conf=_vars, list_id=list_id)
 
+        cfg.validate_schema(datatype)
         cfg.update_vars(cfg._vars)
         return cfg
 
@@ -123,23 +133,22 @@ class Config:
         else:
             self.__setattr__(key, values)
 
-    def validate_schema(self, schema: Optional[Dict[Any, Any]] = None):
+    def validate_schema(self, datatype: Optional[T] = None):
         """
         Optionally, validate the incoming data vs a provided schema.
 
         The schema should follow JSON schema specification.
-        :param schema: JSON schema specification as a Dict
+        :param datatype: Pydantic data type class
         :return: Either the validation passes or raise an exception
         """
-        if schema:
+        if datatype:
             try:
-                validate(self._vars, schema)
-            except ValidationError as err:
-                logging.error("Data does not follow the provided schema.")
-                raise err
-            except SchemaError as err:
-                logging.error("Trying to run a validation with a bad schema")
-                raise err
+                self.data = datatype(**self._vars)
+                logging.info(f"Updating vars based on {datatype}")
+                self._vars = self.data.dict()
+            except ValidationError as e:
+                logging.error(f"Error validating data with {datatype}")
+                raise e
 
     def __call__(self, key: str, default: Optional[Any] = ...):
         """

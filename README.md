@@ -219,40 +219,45 @@ Which in the example will show us
 ## Schema Validation
 
 At some point it might be interesting to make sure that the YAML we are reading follows
-some standards. That is why we have introduced the ability to pass a `schema` our file
+some standards. That is why we have introduced the ability to pass a schema our file
 needs to follow.
 
-The schema validation is done using the module `jsonschema`, which follows the JSON schema
-[specification](https://json-schema.org/understanding-json-schema/reference/).
+This feature is supported by [Pydantic](https://pydantic-docs.helpmanual.io/), 
+and not only helps us to validate the schema, but even updating the values we're 
+reading with `Optionals` and defaults.
 
-As an example, if we want to make sure our kitten data is valid, we can write:
+We can get this running as
 
 ```python
-schema = {
-    "type": "object",
-    "properties": {
-        "title": {"type": "string"},
-        "colors": {"type": "array", "items": {"type": "string"}},
-        "hobby": {
-            "type": "object",
-            "properties": {
-                "eating": {
-                    "type": "object",
-                    "properties": {
-                        "what": {"type": "string"}
-                    }
-                }
-            }
-        },
-        "friends": {"type": "array", "items": {"type": "object"}}
-    }
-}
+from pydantic import BaseModel
 
-Config.read_file("<file>", schema=schema)  # this should run OK
+
+class Friends(BaseModel):
+    name: str
+    type: str
+    fur: str = "soft"
+
+class Kitten(BaseModel):
+    title: str
+    age: Optional[int]
+    colors: List[str]
+    hobby: Dict[str, Dict[str, str]]
+    friends: List[Friends]
+
+cfg = Config.read_file("<file>", datatype=Kitten)
+
+# We should have the data attribute now hosting the data class
+assert cfg.data is not None
+
+# We have optional values as None
+assert cfg.age is None
+
+# We have missing values with their default
+assert cfg.friends.lima.fur == "soft"
 ```
 
-In case the validation fails, we'll get a `ValidationError`. If the schema is incorrect,
-the exception will be a `SchemaError` instead.
+Note how this adds even another layer of flexibility, as after reading the YAML we will
+have all the data we might require available to use.
 
 ## Contributing
 
@@ -266,3 +271,5 @@ To install the package from source, clone the repo, `pip install flit` and run `
 ## References
 
 - [pyconfs](https://github.com/gahjelle/pyconfs) as inspiration.
+- [pydantic](https://pydantic-docs.helpmanual.io/) - implementing the validation and
+    data filling.
