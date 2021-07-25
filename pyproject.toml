@@ -2,7 +2,7 @@
 requires = [
     "PyYAML==5.4.1",
     "Jinja2==3.0.1",
-    "jsonschema==3.2.0",
+    "pydantic==1.8.2",
 ]
 build-backend = "flit_core.buildapi"
 
