@@ -1,8 +1,9 @@
 import os
 import pytest
+from typing import Dict, List, Optional
 from unittest import mock
 
-from jsonschema import ValidationError, SchemaError
+from pydantic import BaseModel, ValidationError
 
 from levy.config import Config
 from levy.renderer import render_reg
@@ -107,48 +108,31 @@ class TestConfig:
         """
         Prove validation behavior
         """
-        schema = {
-            "type": "object",
-            "properties": {
-                "title": {"type": "string"},
-                "colors": {"type": "array", "items": {"type": "string"}},
-                "hobby": {
-                    "type": "object",
-                    "properties": {
-                        "eating": {
-                            "type": "object",
-                            "properties": {"what": {"type": "string"}},
-                        }
-                    },
-                },
-                "friends": {"type": "array", "items": {"type": "object"}},
-            },
-        }
 
-        Config.read_file(self.file, schema=schema)  # this should run OK
+        class Friends(BaseModel):
+            name: str
+            type: str
+            fur: str = "soft"
 
-        schema_ko = {
-            "type": "object",
-            "properties": {
-                "title": {"type": "string"},
-                "colors": {"type": "array", "items": {"type": "number"}},  # This is bad
-                "hobby": {
-                    "type": "object",
-                    "properties": {
-                        "eating": {
-                            "type": "object",
-                            "properties": {"what": {"type": "string"}},
-                        }
-                    },
-                },
-                "friends": {"type": "array", "items": {"type": "object"}},
-            },
-        }
+        class Kitten(BaseModel):
+            title: str
+            age: Optional[int]
+            colors: List[str]
+            hobby: Dict[str, Dict[str, str]]
+            friends: List[Friends]
 
+        cfg = Config.read_file(self.file, datatype=Kitten)
+
+        # We should have the data attribute now
+        assert cfg.data is not None
+
+        # We have optional values as None
+        assert cfg.age is None
+
+        # We have missing values with their default
+        assert cfg.friends.lima.fur == "soft"
+
+        # Value is not a dict, however colors is correct as we can cast int to str
         with pytest.raises(ValidationError):
-            Config.read_file(self.file, schema=schema_ko)
-
-        schema_no_bueno = {"type": "object", "properties": {"random"}}
-
-        with pytest.raises(SchemaError):
-            Config.read_file(self.file, schema=schema_no_bueno)
+            file = os.path.join(self.resources, "test_ko.yaml")
+            Config.read_file(file, datatype=Kitten)
