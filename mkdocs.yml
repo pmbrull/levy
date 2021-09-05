@@ -1,0 +1,23 @@
+site_name: Levy
+site_description: Supercharge YAML configs with Jinja, types and custom functions.
+
+theme:
+    name: material
+    font:
+        text: Poppins
+        code: Poppins Mono
+    palette:
+        primary: light blue
+        accent: amber
+    icon:
+        repo: fontawesome/brands/github-alt
+        logo: fontawesome/solid/fast-forward
+
+repo_name: pmbrull/levy
+repo_url: https://github.com/pmbrull/levy
+
+plugins:
+  - search
+
+nav:
+    - Levy: 'index.md'

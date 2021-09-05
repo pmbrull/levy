@@ -24,3 +24,17 @@ requires = [
     "pydantic==1.8.2",
 ]
 requires-python = ">=3.6"
+
+[tool.flit.metadata.requires-extra]
+test = [
+    "pytest >=6.2.4,<7.0.0",
+    "coverage >=5.5,<6.0",
+    "black >=21.5b1,<22.0b0",
+    "isort >=5.9.3,<6.0.0",
+    "pre-commit >= 2.9.2,<3.0.0",
+]
+doc = [
+    "mkdocs >=1.1.2,<2.0.0",
+    "mkdocs-material >=5.4.0,<6.0.0",
+    "markdown-include >=0.5.1,<0.6.0",
+]
