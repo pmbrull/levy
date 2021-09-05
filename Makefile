@@ -1,3 +1,6 @@
+TEST_DIR ?= tests
+PROJECT_DIR ?= levy
+
 install:
 	@echo "Installing requirements..."
 	pip install -r requirements.txt
@@ -11,16 +14,19 @@ precommit_install:
 	@echo "Make sure to first run `make install_test`"
 	pre-commit install
 
+isort:
+	isort $(PROJECT_DIR)
+
 lint:
-	pylint --rcfile=.pylintrc levy
+	pylint --rcfile=.pylintrc $(PROJECT_DIR)
 
 black:
-	black levy tests
+	black $(PROJECT_DIR) $(TEST_DIR)
 
 black_check:
-	black --check --diff levy
+	black --check --diff $(PROJECT_DIR)
 
 unit:
-	pytest tests
+	pytest $(TEST_DIR)
 
 test_all: install install_test black_check lint unit
