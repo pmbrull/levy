@@ -1,17 +1,15 @@
 """
 Config parser definition
 """
-from collections import namedtuple
-from typing import Optional, Dict, Any, List, TypeVar, Generic
-
 import logging
-import yaml
+from collections import namedtuple
+from typing import Any, Dict, Generic, List, Optional, TypeVar
 
+import yaml
 from pydantic import ValidationError
 
-from levy.renderer import render_str
 from levy.exceptions import ListParseException
-
+from levy.renderer import render_str
 
 T = TypeVar("T")
 
