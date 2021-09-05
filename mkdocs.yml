@@ -1,4 +1,5 @@
 site_name: Levy
+site_url: https://pmbrull.github.io/levy/
 site_description: Supercharge YAML configs with Jinja, types and custom functions.
 
 theme:
@@ -15,9 +16,10 @@ theme:
 
 repo_name: pmbrull/levy
 repo_url: https://github.com/pmbrull/levy
+edit_uri: ""
 
 plugins:
   - search
 
 nav:
-    - Levy: 'index.md'
+    - Levy: index.md
