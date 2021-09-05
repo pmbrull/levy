@@ -2,8 +2,8 @@
 Mixins for config
 """
 import os
-from typing import Optional
 from collections import namedtuple
+from typing import Optional
 
 from jinja2 import Template
 
