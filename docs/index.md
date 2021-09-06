@@ -21,8 +21,30 @@
 
 ---
 
-**Documentation**: <a href="TBD" target="_blank">https://TBD.com</a>
+**Documentation**: <a href="https://pmbrull.github.io/levy/" target="_blank">https://pmbrull.github.io/levy/</a>
 
 **Source Code**: <a href="https://github.com/pmbrull/levy" target="_blank">https://github.com/pmbrull/levy</a>
 
 ---
+
+## Installation
+
+Get up and running with
+
+```bash
+pip install levy
+```
+
+This will also bring to your environment `PyYAML`, `Jinja2` and `pydantic`.
+
+## Usage
+
+<div class="termy">
+
+```console
+$ pip install typer
+---> 100%
+Successfully installed typer
+```
+
+</div>
