@@ -14,6 +14,9 @@
 <a href="https://github.com/pmbrull/levy" target="_blank">
     <img src="https://github.com/pmbrull/levy/actions/workflows/CI.yaml/badge.svg" alt="Package version">
 </a>
+<a href="https://codecov.io/gh/pmbrull/levy">
+    <img src="https://codecov.io/gh/pmbrull/levy/branch/main/graph/badge.svg?token=C2OSY77VFR"/>
+</a> 
 </p>
 
 ---
