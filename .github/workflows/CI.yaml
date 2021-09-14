@@ -1,5 +1,5 @@
 name: CI
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -14,3 +14,5 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - run: make test_all
+    - name: Upload coverage
+      uses: codecov/codecov-action@v1

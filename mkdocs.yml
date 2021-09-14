@@ -18,8 +18,29 @@ repo_name: pmbrull/levy
 repo_url: https://github.com/pmbrull/levy
 edit_uri: ""
 
-plugins:
-  - search
+markdown_extensions:
+    - toc:
+        permalink: true
+    - pymdownx.superfences:
+        custom_fences:
+            - name: mermaid
+              class: mermaid
+              format: !!python/name:pymdownx.superfences.fence_div_format
+    - pymdownx.tabbed
 
 nav:
-    - Levy: index.md
+    - Quickstart: index.md
+    - Using Defaults: defaults.md
+    - Nested Config Lists: lists.md
+    - Render Custom Functions: functions.md
+    - Schema Validation: schema.md
+    - Contributing: contributing.md
+    - References: references.md
+
+extra_css:
+    - css/termynal.css
+    - css/custom.css
+
+extra_javascript:
+    - js/termynal.js
+    - js/custom.js

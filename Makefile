@@ -27,6 +27,8 @@ black_check:
 	black --check --diff $(PROJECT_DIR)
 
 unit:
-	pytest $(TEST_DIR)
+	coverage erase
+	coverage run -m pytest --doctest-modules $(TEST_FOLDER)
+	coverage xml -i
 
 test_all: install install_test black_check lint unit
