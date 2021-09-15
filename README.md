@@ -9,6 +9,16 @@
 
 This project is a lightweight take on configuration parsing with a twist.
 
+- Docs: https://pmbrull.github.io/levy/
+
+## Installation
+
+Get up and running with
+
+```bash
+pip install levy
+```
+
 So far, it only supports YAML files or reading configurations directly from a `dict`.
 
 The interesting approach here is regarding handling multiple environments. Usually we
