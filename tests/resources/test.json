@@ -1,0 +1,21 @@
+{
+  "title": "Lévy the cat",
+  "colors": ["black", "white"],
+  "hobby": {
+    "eating": {
+      "what": "anything"
+    }
+  },
+  "friends": [
+    {% set friends = [ "cartman", "lima" ] %}
+    {% for friend in friends %}
+      {
+        "name": "${ friend }",
+        "type": "cat"
+      }
+        {% if loop.index0 < friends|length - 1%}
+        ,
+        {% endif %}
+    {% endfor %}
+    ]
+}

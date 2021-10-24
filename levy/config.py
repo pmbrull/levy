@@ -1,8 +1,10 @@
 """
 Config parser definition
 """
+import json
 import logging
 from collections import namedtuple
+from pathlib import Path
 from typing import Any, Dict, Generic, List, Optional, TypeVar
 
 import yaml
@@ -54,11 +56,25 @@ class Config(Generic[T]):
         :return:
         """
 
-        with open(file, "r") as yml_file:
-            rendered = render_str(yml_file.read())
-            cfg = cls.read_dict(
-                yaml.safe_load(rendered), name=name, list_id=list_id, datatype=datatype
-            )
+        # Check file extension
+        ext = Path(file).suffix
+
+        if ext == ".yaml":
+            with open(file, "r") as yml_file:
+                rendered = render_str(yml_file.read())
+                cfg = cls.read_dict(
+                    yaml.safe_load(rendered),
+                    name=name,
+                    list_id=list_id,
+                    datatype=datatype,
+                )
+
+        if ext == ".json":
+            with open(file, "r") as json_file:
+                rendered = render_str(json_file.read())
+                cfg = cls.read_dict(
+                    json.loads(rendered), name=name, list_id=list_id, datatype=datatype
+                )
 
         cfg._file = file  # pylint: disable=attribute-defined-outside-init
         return cfg

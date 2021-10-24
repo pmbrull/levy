@@ -34,6 +34,7 @@ nav:
     - Nested Config Lists: lists.md
     - Render Custom Functions: functions.md
     - Schema Validation: schema.md
+    - JSON Files: json.md
     - Contributing: contributing.md
     - References: references.md
 

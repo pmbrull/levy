@@ -1,13 +1,13 @@
 import os
-import pytest
 from typing import Dict, List, Optional
 from unittest import mock
 
+import pytest
 from pydantic import BaseModel, ValidationError
 
 from levy.config import Config
-from levy.renderer import render_reg
 from levy.exceptions import ListParseException
+from levy.renderer import render_reg
 
 
 class TestConfig:
@@ -17,6 +17,7 @@ class TestConfig:
         self.resources = os.path.join(self.dir, "resources")
 
         self.file = os.path.join(self.resources, "test.yaml")
+        self.json_file = os.path.join(self.resources, "test.json")
         self.cfg = Config.read_file(file=self.file)
 
     def test_name(self):
@@ -136,3 +137,12 @@ class TestConfig:
         with pytest.raises(ValidationError):
             file = os.path.join(self.resources, "test_ko.yaml")
             Config.read_file(file, datatype=Kitten)
+
+    def test_json(self):
+        """
+        Validate JSON file read
+        """
+        cfg = Config.read_file(self.json_file)
+        cfg_yaml = Config.read_file(self.file)
+
+        assert cfg._vars == cfg_yaml._vars
