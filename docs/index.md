@@ -1,5 +1,5 @@
 <p align="center">
-    <em>Supercharge YAML configs with Jinja templates, typing and custom functions.</em>
+    <em>Supercharge configs with Jinja templates, typing and custom functions.</em>
 </p>
 <p align="center">
 <a href="https://pypi.org/project/levy/" target="_blank">
