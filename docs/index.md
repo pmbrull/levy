@@ -46,9 +46,10 @@ This will also bring to your environment `PyYAML`, `Jinja2` and `pydantic`.
 
 ## Quickstart
 
-This project is a lightweight take on configuration parsing with a twist.  So far, it only supports YAML files or reading configurations directly from a `dict`.
+This project is a lightweight take on configuration parsing with a twist. It supports reading both JSON and YAML files, as well as getting configurations
+directly from a `dict`.
 
-`levy` adds a `jinja2` layer on top our YAML files, which allows us to run any Jinja templating syntax on them. Later on, we will also see how to register our own custom functions.
+`levy` adds a `jinja2` layer on top our config files, which allows us to run any Jinja templating syntax on them. Later on, we will also see how to register our own custom functions.
 
 Let's suppose we have the following configuration:
 

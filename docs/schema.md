@@ -50,7 +50,7 @@ class Kitten(BaseModel):
 cfg = Config.read_file("<file>", datatype=Kitten)
 ```
 
-Note how this adds even another layer of flexibility, as after reading the YAML we will
+Note how this adds even another layer of flexibility, as after reading the config we will
 have all the data we might require available to use.
 
 

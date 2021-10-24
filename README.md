@@ -19,14 +19,15 @@ Get up and running with
 pip install levy
 ```
 
-So far, it only supports YAML files or reading configurations directly from a `dict`.
+It supports reading both JSON and YAML files, as well as getting configurations
+directly from a `dict`.
 
 The interesting approach here is regarding handling multiple environments. Usually we
 need to pass different parameters depending on where we are (DEV, PROD, and any 
 arbitrary environment name we might use). It is also common to have these specific parameters
 available as env variables, be it our infra or in a CI/CD process.
 
-`levy` adds a `jinja2` layer on top of our YAML files, so that not only we can load
+`levy` adds a `jinja2` layer on top of our config files, so that not only we can load
 env variables on the fly, but helps us leverage templating syntax to keep
 our configurations centralized and DRY.
 
@@ -162,7 +163,7 @@ cfg("not in there")  # AttributeError
 
 ### Environment Variables
 
-With this templating approach on top of YAML, we can not only use default behaviors, but also
+With this templating approach on top of our files, we can not only use default behaviors, but also
 define our own custom functionalities.
 
 The one we have provided by default is reading environment variables at render time:
@@ -178,7 +179,7 @@ we'll get a `MissingEnvException`.
 
 ### Registering new functions
 
-If we need to apply different functions when rendering the YAML, we can register them
+If we need to apply different functions when rendering the files, we can register them
 by name before instantiating the `Config` class.
 
 Let's imagine the following YAML file:
@@ -210,7 +211,7 @@ cfg.foo  # 'X'
 Note how we registered `my_func` with the same name it appeared in the YAML. However,
 the name is completely arbitrary, and we can pass the function `upper` with the name `bar`.
 
-With this approach one can add even further dynamism to the YAML config files.
+With this approach one can add even further dynamism to both YAML and JSON config files.
 
 To peek into the registry state, we can run:
 
@@ -228,7 +229,7 @@ Which in the example will show us
 
 ## Schema Validation
 
-At some point it might be interesting to make sure that the YAML we are reading follows
+At some point it might be interesting to make sure that the config we are reading follows
 some standards. That is why we have introduced the ability to pass a schema our file
 needs to follow.
 
@@ -266,7 +267,7 @@ assert cfg.age is None
 assert cfg.friends.lima.fur == "soft"
 ```
 
-Note how this adds even another layer of flexibility, as after reading the YAML we will
+Note how this adds even another layer of flexibility, as after reading the file we will
 have all the data we might require available to use.
 
 ## Contributing

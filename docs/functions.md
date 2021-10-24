@@ -17,7 +17,7 @@ We can then access these values as usual.
 
 ## Registering new functions
 
-If we need to apply different functions when rendering the YAML, we can register them
+If we need to apply different functions when rendering the files, we can register them
 by name before instantiating the `Config` class.
 
 Let's imagine the following YAML file:
@@ -60,7 +60,7 @@ $ cfg.foo
 Note how we registered `my_func` with the same name it appeared in the YAML. However,
 the name is completely arbitrary, and we can pass the function `upper` with the name `bar`.
 
-With this approach one can add even further dynamism to the YAML config files.
+With this approach one can add even further dynamism to our config files.
 
 ## Registry
 
