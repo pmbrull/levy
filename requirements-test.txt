@@ -1,4 +1,4 @@
-black==21.5b1
+black==24.3.0
 pylint==2.8.3
 pre-commit==2.9.2
 pytest==6.2.4
